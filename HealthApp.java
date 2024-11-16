@@ -5,29 +5,30 @@
 package healthapp;
 
 /**
- * @author ArishaMirza
- * 5/11/2024
- * 
+ * @author arisha mirza
+ * date: 12/11/24
+ * HealthApp.java
  */
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HealthApp extends JFrame {
     
-    // Constructor to set up the main frame
+    // Constructor
     public HealthApp() {
-        // Set up the frame
+        // main frame
         setTitle("Health Application");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Main panel with layout
+        // Main panel
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
-        // Create navigation buttons
+        // create nav buttons
         JButton userProfileButton = new JButton("User Profile");
         userProfileButton.setBounds(100, 50, 200, 30);
         
@@ -37,15 +38,14 @@ public class HealthApp extends JFrame {
         JButton vaccineRecordButton = new JButton("Vaccine Record");
         vaccineRecordButton.setBounds(100, 150, 200, 30);
 
-        // Add buttons to panel
+        // adds nav buttons to panel
         panel.add(userProfileButton);
         panel.add(mentalHealthButton);
         panel.add(vaccineRecordButton);
 
-        // Add panel to frame
         add(panel);
 
-        // Button action listeners
+        // acction listener for accessing user profile
         userProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -54,11 +54,9 @@ public class HealthApp extends JFrame {
                 userProfile.setVisible(true);
             }
         });
-
-        // You can add more action listeners for other buttons when the UI for those sections is ready
     }
     
-    // Main method to run the application
+    // main method
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
