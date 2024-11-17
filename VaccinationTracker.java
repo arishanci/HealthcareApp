@@ -118,7 +118,38 @@ public class VaccinationTracker extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE
         );
     }
+    
+private void showTravelRecommendations() {
+        String[] locations = {"Africa", "Asia", "Europe", "North America", "South America"};
+        String selectedLocation = (String) JOptionPane.showInputDialog(
+                this,
+                "Select a location:",
+                "Travel Recommendations",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                locations,
+                locations[0]
+        );
 
+        if (selectedLocation != null) {
+            String recommendations = switch (selectedLocation) {
+                case "Africa" -> "Recommended: Yellow Fever, Typhoid, Malaria Prophylaxis";
+                case "Asia" -> "Recommended: Hepatitis A, Japanese Encephalitis, Typhoid";
+                case "Europe" -> "Routine vaccines, Tick-borne Encephalitis in rural areas";
+                case "North America" -> "Routine vaccines, Rabies (for wildlife exposure)";
+                case "South America" -> "Yellow Fever, Hepatitis A, Typhoid";
+                default -> "No specific recommendations.";
+            };
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    recommendations,
+                    "Travel Recommendations",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             VaccinationTracker tracker = new VaccinationTracker();
