@@ -56,6 +56,12 @@ public class HealthApp extends JFrame {
         });
     }
     
+    // Method to open the VaccinationTracker window
+    private void openVaccinationTracker() {
+        VaccinationTracker tracker = new VaccinationTracker();
+        tracker.setVisible(true); // Show the vaccination tracker window
+    }
+    
     // main method
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
