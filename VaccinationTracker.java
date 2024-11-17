@@ -20,7 +20,7 @@ public class VaccinationTracker extends JFrame {
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        
         // Main panel setup
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -51,6 +51,53 @@ public class VaccinationTracker extends JFrame {
 
         // Add the panel to the frame
         add(panel);
+    }
+    private void openAddVaccinationDialog(DefaultTableModel tableModel) {
+        JDialog addDialog = new JDialog(this, "Add Vaccination", true);
+        addDialog.setSize(400, 300);
+        addDialog.setLayout(null);
+        addDialog.setLocationRelativeTo(this);
+
+        JLabel nameLabel = new JLabel("Vaccine Name:");
+        nameLabel.setBounds(30, 30, 120, 25);
+        JTextField nameField = new JTextField();
+        nameField.setBounds(150, 30, 200, 25);
+
+        JLabel dateLabel = new JLabel("Date Received:");
+        dateLabel.setBounds(30, 70, 120, 25);
+        JTextField dateField = new JTextField();
+        dateField.setBounds(150, 70, 200, 25);
+
+        JLabel boosterLabel = new JLabel("Booster Due:");
+        boosterLabel.setBounds(30, 110, 120, 25);
+        JTextField boosterField = new JTextField();
+        boosterField.setBounds(150, 110, 200, 25);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.setBounds(150, 160, 80, 30);
+
+        saveButton.addActionListener(e -> {
+            String name = nameField.getText();
+            String date = dateField.getText();
+            String booster = boosterField.getText();
+
+            if (!name.isEmpty() && !date.isEmpty() && !booster.isEmpty()) {
+                tableModel.addRow(new Object[]{name, date, booster});
+                addDialog.dispose();
+            } else {
+                JOptionPane.showMessageDialog(addDialog, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        addDialog.add(nameLabel);
+        addDialog.add(nameField);
+        addDialog.add(dateLabel);
+        addDialog.add(dateField);
+        addDialog.add(boosterLabel);
+        addDialog.add(boosterField);
+        addDialog.add(saveButton);
+
+        addDialog.setVisible(true);
     }
 
     public static void main(String[] args) {
