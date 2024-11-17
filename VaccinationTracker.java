@@ -99,6 +99,25 @@ public class VaccinationTracker extends JFrame {
 
         addDialog.setVisible(true);
     }
+     private void checkOverdueVaccinations(DefaultTableModel tableModel) {
+        StringBuilder overdueList = new StringBuilder("Overdue Vaccinations:\n");
+        boolean foundOverdue = false;
+
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            String boosterDate = (String) tableModel.getValueAt(i, 2);
+            if (boosterDate.compareTo(java.time.LocalDate.now().toString()) < 0) {
+                overdueList.append(tableModel.getValueAt(i, 0)).append(" - Due: ").append(boosterDate).append("\n");
+                foundOverdue = true;
+            }
+        }
+
+        JOptionPane.showMessageDialog(
+                this,
+                foundOverdue ? overdueList.toString() : "No overdue vaccinations.",
+                "Overdue Check",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
