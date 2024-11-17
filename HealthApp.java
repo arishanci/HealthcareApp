@@ -37,11 +37,15 @@ public class HealthApp extends JFrame {
         
         JButton vaccineRecordButton = new JButton("Vaccine Record");
         vaccineRecordButton.setBounds(100, 150, 200, 30);
+        
+        JButton generalHealthButton = new JButton("General Health");
+        generalHealthButton.setBounds(100, 200, 200, 30);
 
         // adds nav buttons to panel
         panel.add(userProfileButton);
         panel.add(mentalHealthButton);
         panel.add(vaccineRecordButton);
+        panel.add(generalHealthButton);
 
         add(panel);
 
@@ -54,12 +58,23 @@ public class HealthApp extends JFrame {
                 userProfile.setVisible(true);
             }
         });
+        
+        mentalHealthButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Open MentalHealthTracker window
+        new MentalHealthTracker().setVisible(true);
     }
-    
-    // Method to open the VaccinationTracker window
-    private void openVaccinationTracker() {
-        VaccinationTracker tracker = new VaccinationTracker();
-        tracker.setVisible(true); // Show the vaccination tracker window
+});
+        
+        vaccineRecordButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Open MentalHealthTracker window
+        new VaccinationTracker().setVisible(true);
+    }
+});
+
     }
     
     // main method

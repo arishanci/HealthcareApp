@@ -10,6 +10,8 @@ package healthapp;
  * UserProfile.java
  */
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class UserProfile extends JFrame {
 
@@ -17,7 +19,7 @@ public class UserProfile extends JFrame {
     public UserProfile() {
         // Main frame
         setTitle("User Profile");
-        setSize(300, 400);
+        setSize(300, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         setLocationRelativeTo(null);
 
