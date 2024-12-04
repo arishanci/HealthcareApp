@@ -62,7 +62,6 @@ public class HealthApp extends JFrame {
         mentalHealthButton.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Open MentalHealthTracker window
         new MentalHealthTracker().setVisible(true);
     }
 });
@@ -70,11 +69,16 @@ public class HealthApp extends JFrame {
         vaccineRecordButton.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Open MentalHealthTracker window
         new VaccinationTracker().setVisible(true);
     }
 });
 
+        generalHealthButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        new HealthTracker().setVisible(true);
+    }
+});
     }
     
     // main method
