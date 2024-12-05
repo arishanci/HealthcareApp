@@ -65,42 +65,81 @@ public class MentalHealthTracker extends JFrame {
 
         // Mood log display
         JLabel moodLogLabel = new JLabel("Mood Logs for the last 10 days:");
-        moodLogLabel.setBounds(50, 160, 200, 25);
+        moodLogLabel.setBounds(50, 120, 200, 25);
         panel.add(moodLogLabel);
 
         moodLogArea = new JTextArea();
-        moodLogArea.setBounds(50, 190, 380, 200);
+        moodLogArea.setBounds(50, 150, 380, 200);
         moodLogArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(moodLogArea);
-        scrollPane.setBounds(50, 190, 380, 200);
+        scrollPane.setBounds(50, 150, 380, 200);
         panel.add(scrollPane);
+        
+        JLabel searchDateLabel = new JLabel("Search by Date:");
+        searchDateLabel.setBounds(50, 420, 120, 25);
+        panel.add(searchDateLabel);
+
+        JDatePickerImpl searchDatePicker = createDatePicker();
+        searchDatePicker.setBounds(150, 420, 200, 25);
+        panel.add(searchDatePicker);
+        
+        JTextArea searchResultsArea = new JTextArea();
+        searchResultsArea.setBounds(50, 460, 380, 30);
+        searchResultsArea.setEditable(false);
+        panel.add(searchResultsArea);
+        
+        JButton searchButton = new JButton("Search");
+        searchButton.setBounds(370, 420, 80, 30);
+        panel.add(searchButton);
 
         // Delete button
         JButton deleteButton = new JButton("Delete Log");
-        deleteButton.setBounds(180, 410, 130, 30);
+        deleteButton.setBounds(180, 370, 130, 30);
         panel.add(deleteButton);
         
         // Find Resources button
         JButton resourcesButton = new JButton("Find Resources");
-        resourcesButton.setBounds(180, 450, 130, 30);
+        resourcesButton.setBounds(60, 500, 170, 30);
         panel.add(resourcesButton);
        
 
         // Back button
         JButton backButton = new JButton("Back to Main Menu");
-        backButton.setBounds(145, 490, 200, 30);
+        backButton.setBounds(260, 500, 170, 30);
         panel.add(backButton);
 
         add(panel);
 
         // Actions all buttons
         submitButton.addActionListener(e -> addMoodEntry());
+        
         deleteButton.addActionListener(e -> deleteMoodEntry());
+        
         resourcesButton.addActionListener(e -> {this.setVisible(false);
             ResourceFinder resourceFinder = new ResourceFinder(this);
             resourceFinder.setVisible(true);
                 }); 
+        
         backButton.addActionListener(e -> dispose());
+        
+        searchButton.addActionListener(e -> {
+    Date selectedDate = (Date) searchDatePicker.getModel().getValue();
+    
+        if (selectedDate == null) {
+            JOptionPane.showMessageDialog(this, "Please select a valid date to search.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+        
+    LocalDate localDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    MoodEntry entry = trackerApp.searchMoodEntryByDate(localDate);
+    
+        if (entry != null) {
+        searchResultsArea.setText("Mood Entry Found:\n" + entry);
+            } else {
+                     searchResultsArea.setText("No entry found.");
+    }
+});
+
     }
     
     //src for JDatePicker library: https://github.com/JDatePicker/JDatePicker
@@ -170,16 +209,16 @@ public class MentalHealthTracker extends JFrame {
    
     //converts select date to a localDate instant 
     LocalDate localDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-     
-    // checks if selected date is in the log
+ 
     boolean deleted = trackerApp.deleteMoodEntry(localDate);
+    // checks if selected date is in the log
     if (!deleted) {
         JOptionPane.showMessageDialog(this, "No log found for the selected date.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
     updateMoodLog(); // Update log
-    JOptionPane.showMessageDialog(this, "Mood log deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(this, "Mood log deleted successfully.", "Confirmed", JOptionPane.INFORMATION_MESSAGE);
 }
 
     //fetches latest data

@@ -33,9 +33,24 @@ public class MHTrackerApp {
     }
 
     // delete mood entry
-    public boolean deleteMoodEntry(LocalDate date) {
-        return moodLog.removeIf(entry -> entry.getDate().equals(date));
+   public boolean deleteMoodEntry(LocalDate date) {
+    for (int i = moodLog.size() - 1; i >= 0; i--) {
+        if (moodLog.get(i).getDate().isEqual(date)) {
+            moodLog.remove(i); // remove item
+            return true;
+        }
     }
+    return false; 
+}
+   
+   public MoodEntry searchMoodEntryByDate(LocalDate date) {
+    for (MoodEntry entry : moodLog) {
+        if (entry.getDate().isEqual(date)) {
+            return entry; // Return the entry if found
+        }
+    }
+    return null; // Return null if no entry is found
+}
 
     // Get mood log
     public String getMoodLog() {
