@@ -112,18 +112,15 @@ public class MentalHealthTracker extends JFrame {
 
         // Actions all buttons
         submitButton.addActionListener(e -> addMoodEntry());
-        
         deleteButton.addActionListener(e -> deleteMoodEntry());
-        
         resourcesButton.addActionListener(e -> {this.setVisible(false);
             ResourceFinder resourceFinder = new ResourceFinder(this);
             resourceFinder.setVisible(true);
                 }); 
-        
         backButton.addActionListener(e -> dispose());
         
         searchButton.addActionListener(e -> {
-    Date selectedDate = (Date) searchDatePicker.getModel().getValue();
+        Date selectedDate = (Date) searchDatePicker.getModel().getValue();
     
         if (selectedDate == null) {
             JOptionPane.showMessageDialog(this, "Please select a valid date to search.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -191,13 +188,23 @@ public class MentalHealthTracker extends JFrame {
     // Add mood entry tracker log
     boolean success = trackerApp.addMoodEntry(localDate, mood);
     if (!success) {
-        JOptionPane.showMessageDialog(this, "Failed to add mood entry. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+    JOptionPane.showMessageDialog(this, "Failed to add mood entry. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+    // Check if it was an update or a new entry
+    MoodEntry existingEntry = trackerApp.searchMoodEntryByDate(localDate);
+    
+    if (existingEntry != null && existingEntry.getMood() == mood) {
+        // Mood updated
+        JOptionPane.showMessageDialog(this, "Mood updated for " + localDate + ".", "Success", JOptionPane.INFORMATION_MESSAGE);
+    } else {
+        // Mood added
+        JOptionPane.showMessageDialog(this, "Mood added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
-
+    
     updateMoodLog(); // Update the log display
     moodInputField.setText(""); // Clear the input field
-}
+        }
+    }
 
     private void deleteMoodEntry() {
     // Validate if a date is selected

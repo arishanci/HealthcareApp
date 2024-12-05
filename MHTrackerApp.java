@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class MHTrackerApp {
-
     // store mood entries
     private ArrayList<MoodEntry> moodLog;
 
@@ -28,9 +27,18 @@ public class MHTrackerApp {
         if (mood < 1 || mood > 5 || date.isAfter(LocalDate.now())) {
             return false; // Invalid input
         }
+        
+        for (MoodEntry entry : moodLog) {
+        if (entry.getDate().isEqual(date)) {
+            entry.setMood(mood); // Update setmood for same date inputs
+            return true;
+        }
+       }
+        
         moodLog.add(new MoodEntry(date, mood));
         return true;
     }
+    
 
     // delete mood entry
    public boolean deleteMoodEntry(LocalDate date) {

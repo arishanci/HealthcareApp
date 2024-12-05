@@ -50,24 +50,26 @@ public class HealthApp extends JFrame {
         userProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open UserProfile window
+                dispose();
                 UserProfile userProfile = new UserProfile();
                 userProfile.setVisible(true);
             }
         });
         
         mentalHealthButton.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        new MentalHealthTracker().setVisible(true);
-    }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new MentalHealthTracker().setVisible(true);
+            }
         });
         
         vaccineRecordButton.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        new VaccinationTracker().setVisible(true);
-    }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new VaccinationTracker().setVisible(true);
+            }
         });
     }
     
