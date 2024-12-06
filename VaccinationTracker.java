@@ -1,5 +1,10 @@
 package healthapp;
 
+/**
+ * @author rodrigo bonorino
+ * date: 06/12/24
+ * VaccinationTracker.java
+ */
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
