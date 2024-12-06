@@ -73,6 +73,7 @@ public class VaccinationTracker extends JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
+                System.out.println("Window is closing. Saving records...");
                 writeRecordsToFile();
                 e.getWindow().dispose();
             }
@@ -242,11 +243,15 @@ public class VaccinationTracker extends JFrame {
 
             // recommendations 
             if (location.equals("Africa")) {
-                recommendationsArea.append("Yellow Fever, Hepatitis A, Hepatitis B, Malaria, Typhoid");
+                recommendationsArea.append("Yellow Fever, Typhoid, Hepatitis A, Hepatitis B, Malaria\n");
             } else if (location.equals("Asia")) {
-                recommendationsArea.append("Hepatitis A, Hepatitis B, Typhoid, Rabies, Malaria");
-            } else {
-                recommendationsArea.append("Please check with your doctor for more details.");
+                recommendationsArea.append("Hepatitis A, Hepatitis B, Typhoid, Malaria, Japanese Encephalitis\n");
+            } else if (location.equals("Europe")) {
+                recommendationsArea.append("Hepatitis A, Measles, Mumps, Rubella\n");
+            } else if (location.equals("North America")) {
+                recommendationsArea.append("Flu, Hepatitis A, Hepatitis B\n");
+            } else if (location.equals("South America")) {
+                recommendationsArea.append("Yellow Fever, Typhoid, Hepatitis A, Hepatitis B\n");
             }
         });
 
@@ -269,20 +274,21 @@ public class VaccinationTracker extends JFrame {
         HealthApp mainMenu = new HealthApp(); 
         mainMenu.setVisible(true); 
     }
+    
 
     private void readRecordsFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 3) {
-                    VaccinationRecord record = new VaccinationRecord(data[0], data[1], data[2]);
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    VaccinationRecord record = new VaccinationRecord(parts[0], parts[1], parts[2]);
                     vaccinationRecords.add(record);
-                    tableModel.addRow(data);
+                    tableModel.addRow(new Object[]{parts[0], parts[1], parts[2]});
                 }
             }
         } catch (IOException e) {
-            System.out.println("No existing records found. Starting fresh.");
+            System.out.println("No previous records found, starting fresh.");
         }
     }
 
@@ -292,8 +298,10 @@ public class VaccinationTracker extends JFrame {
                 writer.write(record.getVaccineName() + "," + record.getDateReceived() + "," + record.getBoosterDue());
                 writer.newLine();
             }
+            System.out.println("Records saved successfully to " + filePath);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Failed to save records.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
