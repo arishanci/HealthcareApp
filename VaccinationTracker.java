@@ -69,6 +69,8 @@ public class VaccinationTracker extends JFrame {
     }
 
     private void openAddVaccinationScreen() {
+        this.setVisible(false);
+
         JFrame addVaccinationFrame = new JFrame("Add Vaccination");
         addVaccinationFrame.setSize(400, 300);
         addVaccinationFrame.setLayout(null);
@@ -114,6 +116,14 @@ public class VaccinationTracker extends JFrame {
             vaccinationRecords.add(record);
             tableModel.addRow(new Object[]{name, date, booster});
             addVaccinationFrame.dispose();
+            VaccinationTracker.this.setVisible(true);
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setBounds(250, 160, 80, 30);
+        cancelButton.addActionListener(e -> {
+            addVaccinationFrame.dispose();
+            VaccinationTracker.this.setVisible(true);
         });
 
         addVaccinationFrame.add(nameLabel);
@@ -123,8 +133,145 @@ public class VaccinationTracker extends JFrame {
         addVaccinationFrame.add(boosterLabel);
         addVaccinationFrame.add(boosterField);
         addVaccinationFrame.add(saveButton);
+        addVaccinationFrame.add(cancelButton);
+
+        addVaccinationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        addVaccinationFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                VaccinationTracker.this.setVisible(true);
+            }
+        });
 
         addVaccinationFrame.setVisible(true);
+    }
+
+    private void openCheckOverdueScreen() {
+        this.setVisible(false);
+
+        JFrame overdueFrame = new JFrame("Overdue Vaccinations");
+        overdueFrame.setSize(400, 300);
+        overdueFrame.setLayout(null);
+        overdueFrame.setLocationRelativeTo(this);
+
+        JLabel overdueLabel = new JLabel("Overdue Vaccinations:");
+        overdueLabel.setBounds(20, 20, 200, 25);
+        overdueFrame.add(overdueLabel);
+
+        JTextArea overdueTextArea = new JTextArea();
+        overdueTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(overdueTextArea);
+        scrollPane.setBounds(20, 60, 350, 180);
+        overdueFrame.add(scrollPane);
+
+        StringBuilder overdueList = new StringBuilder();
+        LocalDate today = LocalDate.now();
+        boolean hasOverdue = false;
+
+        for (VaccinationRecord record : vaccinationRecords) {
+            LocalDate boosterDate = LocalDate.parse(record.getBoosterDue());
+            if (boosterDate.isBefore(today)) {
+                overdueList.append(record.getVaccineName())
+                           .append(" - Due: ").append(record.getBoosterDue()).append("\n");
+                hasOverdue = true;
+            }
+        }
+
+        overdueTextArea.setText(hasOverdue ? overdueList.toString() : "No overdue vaccinations.");
+
+        JButton closeButton = new JButton("Close");
+        closeButton.setBounds(150, 250, 100, 30);
+        closeButton.addActionListener(e -> {
+            overdueFrame.dispose();
+            VaccinationTracker.this.setVisible(true);
+        });
+
+        overdueFrame.add(closeButton);
+
+        overdueFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        overdueFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                VaccinationTracker.this.setVisible(true);
+            }
+        });
+
+        overdueFrame.setVisible(true);
+    }
+
+    private void openTravelRecommendationsScreen() {
+        this.setVisible(false);
+
+        JFrame travelFrame = new JFrame("Travel Recommendations");
+        travelFrame.setSize(400, 300);
+        travelFrame.setLayout(null);
+        travelFrame.setLocationRelativeTo(this);
+
+        JLabel locationLabel = new JLabel("Select a Location:");
+        locationLabel.setBounds(30, 30, 150, 25);
+        travelFrame.add(locationLabel);
+
+        String[] locations = {"Africa", "Asia", "Europe", "North America", "South America"};
+        JComboBox<String> locationDropdown = new JComboBox<>(locations);
+        locationDropdown.setBounds(180, 30, 150, 25);
+        travelFrame.add(locationDropdown);
+
+        JTextArea recommendationsArea = new JTextArea();
+        recommendationsArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(recommendationsArea);
+        scrollPane.setBounds(30, 100, 320, 120);
+        travelFrame.add(scrollPane);
+
+        JButton showRecommendationsButton = new JButton("Show Recommendations");
+        showRecommendationsButton.setBounds(120, 70, 180, 25);
+        showRecommendationsButton.addActionListener(e -> {
+            String selectedLocation = (String) locationDropdown.getSelectedItem();
+            String recommendations = switch (selectedLocation) {
+                case "Africa" -> "Recommended: Yellow Fever, Typhoid, Malaria Prophylaxis";
+                case "Asia" -> "Recommended: Hepatitis A, Japanese Encephalitis, Typhoid";
+                case "Europe" -> "Routine vaccines, Tick-borne Encephalitis in rural areas";
+                case "North America" -> "Routine vaccines, Rabies (for wildlife exposure)";
+                case "South America" -> "Yellow Fever, Hepatitis A, Typhoid";
+                default -> "No specific recommendations.";
+            };
+            recommendationsArea.setText(recommendations);
+        });
+
+        JButton closeButton = new JButton("Close");
+        closeButton.setBounds(150, 230, 100, 30);
+        closeButton.addActionListener(e -> {
+            travelFrame.dispose();
+            VaccinationTracker.this.setVisible(true);
+        });
+
+        travelFrame.add(showRecommendationsButton);
+        travelFrame.add(closeButton);
+
+        travelFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        travelFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                VaccinationTracker.this.setVisible(true);
+            }
+        });
+
+        travelFrame.setVisible(true);
+    }
+
+    private void readRecordsFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length == 3) {
+                    VaccinationRecord record = new VaccinationRecord(data[0], data[1], data[2]);
+                    vaccinationRecords.add(record);
+                    tableModel.addRow(data);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("No existing records found. Starting fresh.");
+        }
     }
 
     private void writeRecordsToFile() {
@@ -134,30 +281,7 @@ public class VaccinationTracker extends JFrame {
                 writer.newLine();
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error saving records: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void readRecordsFromFile() {
-        File file = new File(filePath);
-        if (!file.exists()) return;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 3) {
-                    String vaccineName = parts[0];
-                    String dateReceived = parts[1];
-                    String boosterDue = parts[2];
-
-                    VaccinationRecord record = new VaccinationRecord(vaccineName, dateReceived, boosterDue);
-                    vaccinationRecords.add(record);
-                    tableModel.addRow(new Object[]{vaccineName, dateReceived, boosterDue});
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error loading records: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to save records.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -166,5 +290,29 @@ public class VaccinationTracker extends JFrame {
             VaccinationTracker tracker = new VaccinationTracker();
             tracker.setVisible(true);
         });
+    }
+}
+
+class VaccinationRecord {
+    private final String vaccineName;
+    private final String dateReceived;
+    private final String boosterDue;
+
+    public VaccinationRecord(String vaccineName, String dateReceived, String boosterDue) {
+        this.vaccineName = vaccineName;
+        this.dateReceived = dateReceived;
+        this.boosterDue = boosterDue;
+    }
+
+    public String getVaccineName() {
+        return vaccineName;
+    }
+
+    public String getDateReceived() {
+        return dateReceived;
+    }
+
+    public String getBoosterDue() {
+        return boosterDue;
     }
 }
