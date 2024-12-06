@@ -50,11 +50,12 @@ public class HealthApp extends JFrame {
         userProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                UserProfile userProfile = new UserProfile();
-                userProfile.setVisible(true);
+            UserProfile userProfile = new UserProfile(HealthApp.this); // Pass current frame as main menu
+            userProfile.setVisible(true);
+            dispose(); // Hide or close the current frame
             }
         });
+
         
         mentalHealthButton.addActionListener(new ActionListener() {
             @Override
