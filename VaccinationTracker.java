@@ -8,6 +8,8 @@ package healthapp;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,9 +21,6 @@ public class VaccinationTracker extends JFrame {
     public VaccinationTracker() {
         vaccinationRecords = new ArrayList<>();
         tableModel = new DefaultTableModel(new String[]{"Vaccine", "Date Received", "Booster Due"}, 0);
-
-        // Load records from file
-        readRecordsFromFile();
 
         // Main frame setup
         setTitle("Vaccination Tracker");
@@ -57,14 +56,19 @@ public class VaccinationTracker extends JFrame {
         travelRecButton.setBounds(30, 260, 200, 30);
         travelRecButton.addActionListener(e -> openTravelRecommendationsScreen());
 
+        JButton loadButton = new JButton("Load Records");
+        loadButton.setBounds(240, 260, 150, 30);
+        loadButton.addActionListener(e -> loadRecordsFromFile(vaccineTable));
+
         JButton backToMenuButton = new JButton("Back to Menu");
-        backToMenuButton.setBounds(240, 260, 150, 30);
+        backToMenuButton.setBounds(400, 260, 150, 30);
         backToMenuButton.addActionListener(e -> goBackToMenu());
 
         panel.add(addButton);
         panel.add(deleteButton);
         panel.add(checkDueButton);
         panel.add(travelRecButton);
+        panel.add(loadButton);
         panel.add(backToMenuButton);
 
         add(panel);
@@ -127,6 +131,10 @@ public class VaccinationTracker extends JFrame {
             VaccinationRecord record = new VaccinationRecord(name, date, booster);
             vaccinationRecords.add(record);
             tableModel.addRow(new Object[]{name, date, booster});
+            
+            // Write the records to the file immediately after adding
+            writeRecordsToFile();
+            
             addVaccinationFrame.dispose();
             this.setVisible(true);
         });
@@ -163,6 +171,8 @@ public class VaccinationTracker extends JFrame {
             // Remove from the list and table
             vaccinationRecords.remove(selectedRow);
             tableModel.removeRow(selectedRow);
+            // Write records to file after deletion
+            writeRecordsToFile();
         }
     }
 
@@ -170,7 +180,7 @@ public class VaccinationTracker extends JFrame {
         this.setVisible(false);
 
         JFrame overdueFrame = new JFrame("Overdue Vaccinations");
-        overdueFrame.setSize(400, 300);
+        overdueFrame.setSize(400, 400); // Increased height
         overdueFrame.setLayout(null);
         overdueFrame.setLocationRelativeTo(this);
 
@@ -181,7 +191,7 @@ public class VaccinationTracker extends JFrame {
         JTextArea overdueTextArea = new JTextArea();
         overdueTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(overdueTextArea);
-        scrollPane.setBounds(20, 60, 350, 180);
+        scrollPane.setBounds(20, 60, 350, 250); // Adjusted height for the scroll pane
         overdueFrame.add(scrollPane);
 
         StringBuilder overdueList = new StringBuilder();
@@ -200,7 +210,7 @@ public class VaccinationTracker extends JFrame {
         overdueTextArea.setText(hasOverdue ? overdueList.toString() : "No overdue vaccinations.");
 
         JButton closeButton = new JButton("Close");
-        closeButton.setBounds(150, 250, 100, 30);
+        closeButton.setBounds(150, 320, 100, 30); // Adjusted position
         closeButton.addActionListener(e -> {
             overdueFrame.dispose();
             this.setVisible(true);
@@ -235,24 +245,14 @@ public class VaccinationTracker extends JFrame {
         scrollPane.setBounds(30, 100, 320, 120);
         travelFrame.add(scrollPane);
 
+        TravelRecommendation travelRecommendation = new TravelRecommendation(); // Create an instance of the new class
+
         JButton showRecommendationsButton = new JButton("Show Recommendations");
         showRecommendationsButton.setBounds(120, 70, 180, 25);
         showRecommendationsButton.addActionListener(e -> {
             String location = (String) locationDropdown.getSelectedItem();
             recommendationsArea.setText("Vaccination recommendations for " + location + ":\n\n");
-
-            // recommendations 
-            if (location.equals("Africa")) {
-                recommendationsArea.append("Yellow Fever, Typhoid, Hepatitis A, Hepatitis B, Malaria\n");
-            } else if (location.equals("Asia")) {
-                recommendationsArea.append("Hepatitis A, Hepatitis B, Typhoid, Malaria, Japanese Encephalitis\n");
-            } else if (location.equals("Europe")) {
-                recommendationsArea.append("Hepatitis A, Measles, Mumps, Rubella\n");
-            } else if (location.equals("North America")) {
-                recommendationsArea.append("Flu, Hepatitis A, Hepatitis B\n");
-            } else if (location.equals("South America")) {
-                recommendationsArea.append("Yellow Fever, Typhoid, Hepatitis A, Hepatitis B\n");
-            }
+            recommendationsArea.append(travelRecommendation.getRecommendations(location)); // Use the new class method
         });
 
         JButton closeButton = new JButton("Close");
@@ -269,16 +269,12 @@ public class VaccinationTracker extends JFrame {
         travelFrame.setVisible(true);
     }
 
-    private void goBackToMenu() {
-        this.setVisible(false);
-        HealthApp mainMenu = new HealthApp(); 
-        mainMenu.setVisible(true); 
-    }
-    
-
-    private void readRecordsFromFile() {
+    private void loadRecordsFromFile(JTable vaccineTable) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
+            vaccinationRecords.clear(); // Clear existing records
+            tableModel.setRowCount(0); // Clear the table model
+            
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 3) {
@@ -287,9 +283,17 @@ public class VaccinationTracker extends JFrame {
                     tableModel.addRow(new Object[]{parts[0], parts[1], parts[2]});
                 }
             }
+            JOptionPane.showMessageDialog(this, "Records loaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
-            System.out.println("No previous records found, starting fresh.");
+            JOptionPane.showMessageDialog(this, "Failed to load records.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
+    }
+
+    private void goBackToMenu() {
+        this.setVisible(false);
+        HealthApp mainMenu = new HealthApp(); 
+        mainMenu.setVisible(true); 
     }
 
     private void writeRecordsToFile() {
@@ -313,6 +317,7 @@ public class VaccinationTracker extends JFrame {
     }
 }
 
+// VaccinationRecord class
 class VaccinationRecord {
     private final String vaccineName;
     private final String dateReceived;
@@ -334,5 +339,27 @@ class VaccinationRecord {
 
     public String getBoosterDue() {
         return boosterDue;
+    }
+}
+
+// TravelRecommendation class
+class TravelRecommendation {
+    private final Map<String, String> recommendations;
+
+    public TravelRecommendation() {
+        recommendations = new HashMap<>();
+        initializeRecommendations();
+    }
+
+    private void initializeRecommendations() {
+        recommendations.put("Africa", "Yellow Fever, Typhoid, Hepatitis A, Hepatitis B, Malaria");
+        recommendations.put("Asia", "Hepatitis A, Hepatitis B, Typhoid, Malaria, Japanese Encephalitis");
+        recommendations.put("Europe", "Hepatitis A, Measles, Mumps, Rubella");
+        recommendations.put("North America", "Flu, Hepatitis A, Hepatitis B");
+        recommendations.put("South America", "Yellow Fever, Typhoid, Hepatitis A, Hepatitis B");
+    }
+
+    public String getRecommendations(String location) {
+        return recommendations.getOrDefault(location, "No recommendations available for this location.");
     }
 }
