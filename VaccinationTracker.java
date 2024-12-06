@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package healthapp;
 
 import java.io.*;
@@ -25,7 +21,7 @@ public class VaccinationTracker extends JFrame {
         // Main frame setup
         setTitle("Vaccination Tracker");
         setSize(600, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
@@ -44,17 +40,27 @@ public class VaccinationTracker extends JFrame {
         addButton.setBounds(30, 220, 150, 30);
         addButton.addActionListener(e -> openAddVaccinationScreen());
 
+        JButton deleteButton = new JButton("Delete Vaccination");
+        deleteButton.setBounds(200, 220, 150, 30);
+        deleteButton.addActionListener(e -> deleteVaccination(vaccineTable));
+
         JButton checkDueButton = new JButton("Check Overdue");
-        checkDueButton.setBounds(200, 220, 150, 30);
+        checkDueButton.setBounds(370, 220, 150, 30);
         checkDueButton.addActionListener(e -> openCheckOverdueScreen());
 
         JButton travelRecButton = new JButton("Travel Recommendations");
-        travelRecButton.setBounds(370, 220, 200, 30);
+        travelRecButton.setBounds(30, 260, 200, 30);
         travelRecButton.addActionListener(e -> openTravelRecommendationsScreen());
 
+        JButton backToMenuButton = new JButton("Back to Menu");
+        backToMenuButton.setBounds(240, 260, 150, 30);
+        backToMenuButton.addActionListener(e -> goBackToMenu());
+
         panel.add(addButton);
+        panel.add(deleteButton);
         panel.add(checkDueButton);
         panel.add(travelRecButton);
+        panel.add(backToMenuButton);
 
         add(panel);
 
@@ -116,14 +122,14 @@ public class VaccinationTracker extends JFrame {
             vaccinationRecords.add(record);
             tableModel.addRow(new Object[]{name, date, booster});
             addVaccinationFrame.dispose();
-            VaccinationTracker.this.setVisible(true);
+            this.setVisible(true);
         });
 
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setBounds(250, 160, 80, 30);
         cancelButton.addActionListener(e -> {
             addVaccinationFrame.dispose();
-            VaccinationTracker.this.setVisible(true);
+            this.setVisible(true);
         });
 
         addVaccinationFrame.add(nameLabel);
@@ -136,14 +142,22 @@ public class VaccinationTracker extends JFrame {
         addVaccinationFrame.add(cancelButton);
 
         addVaccinationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        addVaccinationFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                VaccinationTracker.this.setVisible(true);
-            }
-        });
-
         addVaccinationFrame.setVisible(true);
+    }
+
+    private void deleteVaccination(JTable vaccineTable) {
+        int selectedRow = vaccineTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a vaccination to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirmed = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this vaccination record?", "Delete Record", JOptionPane.YES_NO_OPTION);
+        if (confirmed == JOptionPane.YES_OPTION) {
+            // Remove from the list and table
+            vaccinationRecords.remove(selectedRow);
+            tableModel.removeRow(selectedRow);
+        }
     }
 
     private void openCheckOverdueScreen() {
@@ -183,19 +197,12 @@ public class VaccinationTracker extends JFrame {
         closeButton.setBounds(150, 250, 100, 30);
         closeButton.addActionListener(e -> {
             overdueFrame.dispose();
-            VaccinationTracker.this.setVisible(true);
+            this.setVisible(true);
         });
 
         overdueFrame.add(closeButton);
 
         overdueFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        overdueFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                VaccinationTracker.this.setVisible(true);
-            }
-        });
-
         overdueFrame.setVisible(true);
     }
 
@@ -225,37 +232,37 @@ public class VaccinationTracker extends JFrame {
         JButton showRecommendationsButton = new JButton("Show Recommendations");
         showRecommendationsButton.setBounds(120, 70, 180, 25);
         showRecommendationsButton.addActionListener(e -> {
-            String selectedLocation = (String) locationDropdown.getSelectedItem();
-            String recommendations = switch (selectedLocation) {
-                case "Africa" -> "Recommended: Yellow Fever, Typhoid, Malaria Prophylaxis";
-                case "Asia" -> "Recommended: Hepatitis A, Japanese Encephalitis, Typhoid";
-                case "Europe" -> "Routine vaccines, Tick-borne Encephalitis in rural areas";
-                case "North America" -> "Routine vaccines, Rabies (for wildlife exposure)";
-                case "South America" -> "Yellow Fever, Hepatitis A, Typhoid";
-                default -> "No specific recommendations.";
-            };
-            recommendationsArea.setText(recommendations);
+            String location = (String) locationDropdown.getSelectedItem();
+            recommendationsArea.setText("Vaccination recommendations for " + location + ":\n\n");
+
+            // recommendations 
+            if (location.equals("Africa")) {
+                recommendationsArea.append("Yellow Fever, Hepatitis A, Hepatitis B, Malaria, Typhoid");
+            } else if (location.equals("Asia")) {
+                recommendationsArea.append("Hepatitis A, Hepatitis B, Typhoid, Rabies, Malaria");
+            } else {
+                recommendationsArea.append("Please check with your doctor for more details.");
+            }
         });
 
         JButton closeButton = new JButton("Close");
         closeButton.setBounds(150, 230, 100, 30);
         closeButton.addActionListener(e -> {
             travelFrame.dispose();
-            VaccinationTracker.this.setVisible(true);
+            this.setVisible(true);
         });
 
         travelFrame.add(showRecommendationsButton);
         travelFrame.add(closeButton);
 
         travelFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        travelFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                VaccinationTracker.this.setVisible(true);
-            }
-        });
-
         travelFrame.setVisible(true);
+    }
+
+    private void goBackToMenu() {
+        this.setVisible(false);
+        HealthApp mainMenu = new HealthApp(); 
+        mainMenu.setVisible(true); 
     }
 
     private void readRecordsFromFile() {
