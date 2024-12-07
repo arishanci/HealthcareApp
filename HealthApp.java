@@ -31,7 +31,7 @@ public class HealthApp extends JFrame {
         panel.setLayout(new GridLayout(0, 1, 10, 10)); // Grid layout for better spacing
         panel.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
         
-        // Create nav buttons with modern look
+        // Create nav button
         JButton userProfileButton = createButton("User Profile");
         JButton mentalHealthButton = createButton("Mental Health Tracker");
         JButton vaccineRecordButton = createButton("Vaccine Record");
@@ -47,16 +47,16 @@ public class HealthApp extends JFrame {
 
         // Action listeners for buttons
         userProfileButton.addActionListener(e -> {
-            UserProfile userProfile = new UserProfile(this);  // Pass 'this' (HealthApp instance)
+            UserProfile userProfile = new UserProfile(this); 
             userProfile.setVisible(true);
             setVisible(false);  // Hide the main menu when user profile is opened
         });
 
         mentalHealthButton.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
         dispose(); // Close the main menu
-        new MentalHealthTracker(HealthApp.this).setVisible(true); // Pass the main menu to the tracker
+        new MentalHealthTracker(HealthApp.this).setVisible(true); 
             }
         });
 
@@ -66,6 +66,7 @@ public class HealthApp extends JFrame {
         });
 
         overviewButton.addActionListener(e -> {
+            dispose();
             new Overview().setVisible(true);
         });
     }

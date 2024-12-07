@@ -40,7 +40,6 @@ public class UserProfileManager {
     }
 
     // Load profiles from file
-    @SuppressWarnings("unchecked") // To suppress unchecked cast warning
     public List<UserProfileData> loadAllProfiles() throws IOException, ClassNotFoundException {
         if (!file.exists() || file.length() == 0) { 
             return new ArrayList<>(); // Return an empty list if the file does not exist or is empty

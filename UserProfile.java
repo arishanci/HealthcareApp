@@ -23,7 +23,7 @@ public class UserProfile extends JFrame implements UserData {
     public UserProfile(JFrame mainMenu) {
         this.mainMenu = mainMenu;
 
-        // Main frame setup
+        // main frame gui
         setTitle("User Profile");
         setSize(300, 330);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -57,7 +57,7 @@ public class UserProfile extends JFrame implements UserData {
         backButton.setBounds(100, 220, 80, 30);
         
 
-        // Add components to panel
+        // Add all labels and buttons to panel
         panel.add(nameLabel);
         panel.add(nameField);
         panel.add(ageLabel);
@@ -68,9 +68,9 @@ public class UserProfile extends JFrame implements UserData {
         panel.add(loadButton);
         panel.add(backButton);
 
-        add(panel);
+        add(panel); //create panel
 
-        // Create file and manager instance
+        // create file and manager instance
         File profileFile = new File("userProfile.data");
         UserProfileManager manager = new UserProfileManager(profileFile);
 
@@ -161,7 +161,7 @@ public class UserProfile extends JFrame implements UserData {
         });
     }
     
-    public String getDetails() {
+    public String getDetails() { //for  overview.java to grab details from
         StringBuilder details = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader("userProfile.data"))) {
             String line;
