@@ -21,12 +21,14 @@ import java.util.Properties;
 
 public class MentalHealthTracker extends JFrame {
 
+    private JFrame mainMenu;
     private JTextField moodInputField;
     private JTextArea moodLogArea;
     private JDatePickerImpl datePicker;
     private MHTrackerApp trackerApp;
 
-    public MentalHealthTracker() {
+    public MentalHealthTracker(JFrame mainMenu) {
+        this.mainMenu = mainMenu;
         // Initialize app class
         trackerApp = new MHTrackerApp();
 
@@ -237,7 +239,10 @@ public class MentalHealthTracker extends JFrame {
     }
         
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MentalHealthTracker().setVisible(true));
+    SwingUtilities.invokeLater(() -> {
+        HealthApp mainMenu = new HealthApp(); // Create the main menu
+        new MentalHealthTracker(mainMenu).setVisible(true); // Pass it to the tracker
+    });
     }
 }
 

@@ -1,87 +1,98 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
 package healthapp;
 
 /**
  * @author arisha mirza
- * date: 12/11/24
+ * date: 22/11/24
  * HealthApp.java
  */
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HealthApp extends JFrame {
     
-    // Constructor
     public HealthApp() {
-        // main frame
+        // Main frame setup
         setTitle("Health Application");
-        setSize(400, 300);
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
-        // Main panel
+        getContentPane().setBackground(new Color(173, 216, 230)); 
+        
+        // Main panel with a nice border
         JPanel panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(new GridLayout(0, 1, 10, 10)); // Grid layout for better spacing
+        panel.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
+        
+        // Create nav buttons with modern look
+        JButton userProfileButton = createButton("User Profile");
+        JButton mentalHealthButton = createButton("Mental Health Tracker");
+        JButton vaccineRecordButton = createButton("Vaccine Record");
+        JButton overviewButton = createButton("Overview");
 
-        // create nav buttons
-        JButton userProfileButton = new JButton("User Profile");
-        userProfileButton.setBounds(100, 50, 200, 30);
-        
-        JButton mentalHealthButton = new JButton("Mental Health Tracker");
-        mentalHealthButton.setBounds(100, 100, 200, 30);
-        
-        JButton vaccineRecordButton = new JButton("Vaccine Record");
-        vaccineRecordButton.setBounds(100, 150, 200, 30);
-        
-
-        // adds nav buttons to panel
+        // Add buttons to the panel
         panel.add(userProfileButton);
         panel.add(mentalHealthButton);
         panel.add(vaccineRecordButton);
+        panel.add(overviewButton);
 
         add(panel);
 
-        // acction listener for accessing user profile
-        userProfileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            UserProfile userProfile = new UserProfile(HealthApp.this); // Pass current frame as main menu
+        // Action listeners for buttons
+        userProfileButton.addActionListener(e -> {
+            UserProfile userProfile = new UserProfile(this);  // Pass 'this' (HealthApp instance)
             userProfile.setVisible(true);
-            dispose(); // Hide or close the current frame
-            }
+            setVisible(false);  // Hide the main menu when user profile is opened
         });
 
-        
         mentalHealthButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        dispose();  // Close the main menu        new MentalHealthTracker(mainMenu).setVisible(true);  // Open Mental Health Tracker and pass main menu
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        dispose(); // Close the main menu
+        new MentalHealthTracker(HealthApp.this).setVisible(true); // Pass the main menu to the tracker
             }
         });
 
-        
-        vaccineRecordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new VaccinationTracker().setVisible(true);
-            }
+        vaccineRecordButton.addActionListener(e -> {
+            dispose();
+            new VaccinationTracker().setVisible(true);
+        });
+
+        overviewButton.addActionListener(e -> {
+            new Overview().setVisible(true);
         });
     }
     
-    // main method
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new HealthApp().setVisible(true);
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setBackground(new Color(70, 130, 180)); // Steel Blue
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Padding inside button
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        // Change color on hover
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(100, 149, 237)); // Change to a lighter blue
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(70, 130, 180)); // Revert to original color
             }
         });
+        
+        return button;
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new HealthApp().setVisible(true));
     }
 }
-

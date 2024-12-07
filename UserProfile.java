@@ -12,13 +12,17 @@ package healthapp;
 import javax.swing.*;
 import java.io.*;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-public class UserProfile extends JFrame {
+public class UserProfile extends JFrame implements UserData {
     private JTextField nameField, ageField, locationField;
     private final JFrame mainMenu;
     
     public UserProfile(JFrame mainMenu) {
         this.mainMenu = mainMenu;
+
         // Main frame setup
         setTitle("User Profile");
         setSize(300, 330);
@@ -128,7 +132,11 @@ public class UserProfile extends JFrame {
             }
         });
         
-        backButton.addActionListener 
+            backButton.addActionListener(e -> {
+            this.setVisible(false); // Hide the UserProfile frame
+            mainMenu.setVisible(true); // Show the main menu
+        });
+ 
     }
 
     public static void main(String[] args) {
@@ -142,7 +150,7 @@ public class UserProfile extends JFrame {
             openProfileButton.addActionListener(e -> {
                 UserProfile userProfile = new UserProfile(mainMenu); // Pass main menu frame to user profile
                 userProfile.setVisible(true);
-                mainMenu.setVisible(false); // Hide main menu when profile is opened
+                mainMenu.setVisible(false); // Hide . main menu when profile is opened
             });
 
             mainMenu.add(openProfileButton);
@@ -152,4 +160,28 @@ public class UserProfile extends JFrame {
             mainMenu.setVisible(true);
         });
     }
+    
+    public String getDetails() {
+        StringBuilder details = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader("userProfile.data"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                details.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            details.append("Failed to load user profile data.\n");
+        }
+        return details.toString();
+    }
+    
+    public void saveData() {
+        String userDetails = getDetails(); // Get the details to save
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("userProfile.data"))) {
+            writer.write(userDetails); // Write the details to the file
+        } catch (IOException e) {
+            System.out.println("Failed to save user profile data: " + e.getMessage());
+        }
+    }
+    
 }

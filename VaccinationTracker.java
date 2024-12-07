@@ -12,8 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-public class VaccinationTracker extends JFrame {
+public class VaccinationTracker extends JFrame implements UserData {
     private final DefaultTableModel tableModel;
     private final ArrayList<VaccinationRecord> vaccinationRecords;
     private final String filePath = "vaccination_records.txt"; // File to store records
@@ -314,6 +317,23 @@ public class VaccinationTracker extends JFrame {
             VaccinationTracker tracker = new VaccinationTracker();
             tracker.setVisible(true);
         });
+    }
+    
+    public String getDetails(){
+    
+        StringBuilder details = new StringBuilder();
+        for (VaccinationRecord record : vaccinationRecords) {
+            details.append(record.getVaccineName())
+                   .append(", Received: ").append(record.getDateReceived())
+                   .append(", Booster Due: ").append(record.getBoosterDue())
+                   .append("\n");
+        }
+        return details.toString();
+    }
+
+    @Override
+    public void saveData() {
+        writeRecordsToFile();
     }
 }
 

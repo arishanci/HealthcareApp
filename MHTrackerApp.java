@@ -110,6 +110,10 @@ class MoodEntry {
     public int getMood() {
         return mood;
     }
+    
+    public void setMood(int mood) {
+        this.mood = mood;
+    }
 
     @Override
     public String toString() {
