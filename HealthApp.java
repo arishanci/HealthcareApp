@@ -58,12 +58,12 @@ public class HealthApp extends JFrame {
 
         
         mentalHealthButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new MentalHealthTracker().setVisible(true);
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        dispose();  // Close the main menu        new MentalHealthTracker(mainMenu).setVisible(true);  // Open Mental Health Tracker and pass main menu
             }
         });
+
         
         vaccineRecordButton.addActionListener(new ActionListener() {
             @Override

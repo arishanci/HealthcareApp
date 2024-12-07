@@ -117,7 +117,10 @@ public class MentalHealthTracker extends JFrame {
             ResourceFinder resourceFinder = new ResourceFinder(this);
             resourceFinder.setVisible(true);
                 }); 
-        backButton.addActionListener(e -> dispose());
+        backButton.addActionListener(e -> {
+            this.setVisible(false); // Hide the UserProfile frame
+            mainMenu.setVisible(true); // Show the main menu
+        });
         
         searchButton.addActionListener(e -> {
         Date selectedDate = (Date) searchDatePicker.getModel().getValue();
