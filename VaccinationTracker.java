@@ -180,7 +180,7 @@ public class VaccinationTracker extends JFrame {
         this.setVisible(false);
 
         JFrame overdueFrame = new JFrame("Overdue Vaccinations");
-        overdueFrame.setSize(400, 400); // Increased height
+        overdueFrame.setSize(400, 400); 
         overdueFrame.setLayout(null);
         overdueFrame.setLocationRelativeTo(this);
 
@@ -191,7 +191,7 @@ public class VaccinationTracker extends JFrame {
         JTextArea overdueTextArea = new JTextArea();
         overdueTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(overdueTextArea);
-        scrollPane.setBounds(20, 60, 350, 250); // Adjusted height for the scroll pane
+        scrollPane.setBounds(20, 60, 350, 250); 
         overdueFrame.add(scrollPane);
 
         StringBuilder overdueList = new StringBuilder();
@@ -210,7 +210,7 @@ public class VaccinationTracker extends JFrame {
         overdueTextArea.setText(hasOverdue ? overdueList.toString() : "No overdue vaccinations.");
 
         JButton closeButton = new JButton("Close");
-        closeButton.setBounds(150, 320, 100, 30); // Adjusted position
+        closeButton.setBounds(150, 320, 100, 30); 
         closeButton.addActionListener(e -> {
             overdueFrame.dispose();
             this.setVisible(true);
